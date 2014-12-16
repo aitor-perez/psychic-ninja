@@ -96,6 +96,6 @@ $\mathcal{V}(n,e + 1,m)$
 Assume we have generated all configurations in $\mathcal{V}(n,e,m)$, then the only new configurations are the ones with at least one vector of length $m+1$. So, for every $i \in [1,n]$, choose $i$ vectors in the boundary and $n-i$ as in $\mathcal{V}(n-i,e,m)$. It remains to be checked which vectors of the boundary can be avoided
 
 
-\item
+\item Once we have removed all equivalent vector configurations, there is something more we have to do. Two different Gale diagrams can represent combinatorially equivalent polytopes, as we saw in the octahedron example slightly moving a vertex. Hence, whenever we get a new Gale diagram, we need to know if its associated polytope is combinatorially equivalent to any of the polytopes we have already seen. The trivial way of doing this is by computing its face lattice (polymake has tools to do so) 
 \end{enumerate}
 \end{document}

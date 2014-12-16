@@ -20,13 +20,11 @@
 %----------------------------
 \topmargin -1.0 cm
 \textheight 22 cm
-\textwidth 17.0cm
-\oddsidemargin -.5cm
-\evensidemargin -.5cm
+\textwidth 15.0cm
 %----------------------------
 
 \title{Discrete and Algorithmic Geometry \\Sheet 4}
-\author{Clara Mateo Campo, Aitor Pérez Pérez, Arnau Planas Bah\'i}
+\author{Clara Mateo Campo, Aitor Pérez Pérez, Arnau Planas Bahí}
 \date{}
 
 \newcommand{\cA}{\mathcal{A}}
@@ -56,7 +54,6 @@
 \newtheorem*{problemG*}{Problem G$^\star$}
 
 
-
 \begin{document}
 \maketitle
 
@@ -70,33 +67,49 @@ Enumerate, up to combinatorial equivalence, all balanced   configurations~$\VV$ 
 
 \emph{For this, recall that a vector configuration $\VV = (v_1,\dots,v_n)$ is balanced if $\sum_i v_i=0$;
 that no hyperplane defined by $e-1$~elements of~$\VV$ separates   exactly one vector from the others iff the Gale dual of $\VV$ is in   convex position; and that two vector configurations are combinatorially equivalent if they define the same oriented matroid.}
-\\\\This problem can be divided in two parts
+
+\bigskip
+
+This problem can be divided in two parts:
+
 \begin{enumerate}
-	\item Find all ``diferent'' vector configurations
+	\item Find all ``different'' vector configurations
 	\item Identify those configurations that correspond to the same polytope.
 \end{enumerate}
-\textbf{Pseudocode}
-\\Trivial algorithm: check all the possibilities and after that check if they are combinatorially equivalent. $\mathcal{O}(m^{e(n-1)})$. This is really inefficient!
-\\Note that up to combinatorial equivalence we can reduce the number of possibilities to $\mathcal{O}(m^{e(n-1)}/(|BC_e|n!))$ and $|BC_e| = 2^e e!$, so, it can be done much more efficiently than the algorithm above.
-\begin{enumerate}
-\item Dynamic programming? Calculate the $\mathcal{V}(n,e,m)$ using all the other configurations $\mathcal{V}(n',e',m')$ where $n'<n$, $e'<e$ and $m'<m$. 
 
-Basic cases:
-For $m=0$, the only configuration we can choose is $n$ zero vectors.
-For $n=1$, we can take every possible vector.
-(Estic molt esp\`es i no se m'acudeixen altres casos base, a banda $e=0$, que \'es una parida i no semblen rellevants. Si $e=1$, triar $n$ vectors en dimensi\'o 1 ja \'es prou merda.)
+\subsection*{Some ideas}
 
-Induction:
-(We add a vector to the configuration) $\mathcal{V}(n + 1,e,m)$
-Take a configuration $v = \{v_1, \ldots, v_n\}\in \mathcal{V}(n,e,m)$ for each vector $v_i$ in this configuration consider all the configurations that keep constant this $v_i$ and at all the other $v_j$ ($j \neq i$), we add the vectors of all the configurations of $\mathcal{V}(n,e,m)$ and the spare vector take as the $n+1$.
-
-$\mathcal{V}(n,e + 1,m)$
-
-(We incrementally consider larger boxes) $\mathcal{V}(n,e,m + 1)$
-Assume we have generated all configurations in $\mathcal{V}(n,e,m)$, then the only new configurations are the ones with at least one vector of length $m+1$. So, for every $i \in [1,n]$, choose $i$ vectors in the boundary and $n-i$ as in $\mathcal{V}(n-i,e,m)$. It remains to be checked which vectors of the boundary can be avoided
-
-
-\item Once we have removed all equivalent vector configurations, there is something more we have to do. Two different Gale diagrams can represent combinatorially equivalent polytopes, as we saw in the octahedron example slightly moving a vertex. Hence, whenever we get a new Gale diagram, we need to know if its associated polytope is combinatorially equivalent to any of the polytopes we have already seen. The trivial way of doing this is by computing its face lattice (polymake has tools to do so) and compare it to the face lattices of every polytope we had.
+\begin{itemize}
+  \item Trivial algorithm: check all the possibilities and after that check if they are combinatorially equivalent. $\mathcal{O}(m^{e(n-1)})$. This is really inefficient! Note that up to combinatorial equivalence we can reduce the number of possibilities to $\mathcal{O}(m^{e(n-1)}/(|BC_e|n!))$ and $|BC_e| = 2^e e!$, so, it can be done much more efficiently than the algorithm above.
+  \item For the first part:
+  
+  \begin{itemize}
+    \item Dynamic programming? Calculate the $\mathcal{V}(n,e,m)$ using all the other configurations $\mathcal{V}(n',e',m')$ where $n'<n$, $e'<e$ and $m'<m$.
+    
+    \begin{itemize}
+      \item Basic cases: For $m=0$, the only configuration we can choose is $n$ zero vectors. For $n=1$, we can take every possible vector.
+      \item Inductive step:
+      
+      \begin{itemize}
+        \item $\mathcal{V}(n + 1,e,m)$ (Adding a vector to a configuration)
+        
+        Take a configuration $v = \{v_1, \ldots, v_n\}\in \mathcal{V}(n,e,m)$ for each vector $v_i$ in this configuration consider all the configurations that keep constant this $v_i$ and at all the other $v_j$ ($j \neq i$), we add the vectors of all the configurations of $\mathcal{V}(n,e,m)$ and the spare vector take as the $n+1$.
+        
+        \item $\mathcal{V}(n,e + 1,m)$ (Incrementing the dimension)
+        
+        ????
+        
+        \item $\mathcal{V}(n,e,m + 1)$ (Incrementally enlarging the box)
+        
+        Assume we have generated all configurations in $\mathcal{V}(n,e,m)$, then the only new configurations are the ones with at least one vector of length $m+1$. So, for every $i \in [1,n]$, choose $i$ vectors in the boundary and $n-i$ as in $\mathcal{V}(n-i,e,m)$. It remains to be checked which vectors of the boundary can be avoided.
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+  
+  \item For the second part:
+  
+  \begin{itemize}
+    \item Once we have removed all equivalent vector configurations, there is something more we have to do. Two different Gale diagrams can represent combinatorially equivalent polytopes, as we saw in the octahedron example slightly moving a vertex. Hence, whenever we get a new Gale diagram, we need to know if its associated polytope is combinatorially equivalent to any of the polytopes we have already seen. The trivial way of doing this is by computing its face lattice (polymake has tools to do so) and compare it to the face lattices of every polytope we had.
 
 However, this is quite time-consuming, and we need a way to distinguish some notion of closeness of two Gale diagrams, in order to discard a number of the polytopes we have already seen. The notion proposed in class was the following:
 
@@ -106,7 +119,7 @@ For instance, the first filter can be the number of facets. If we have partition
 
 A second filter can be the facet structure.
 
-Then, the problem reduces to, given a Gale diagram, compute the facets of its associated polytope. These facets are in bijection with circuits of $Gale(P)$, which are in bijection with cocircuits of its transform. The only thing we have to do is to consider the vectors of $Gale(P)$ as a matrix, and find a basis of its kernel. The resulting rows would be then the circuits of $Gale(P)$, i.e. the facets we are looking for.
-
-\end{enumerate}
+In this situation, the problem reduces to, given a Gale diagram, compute the facets of its associated polytope. These facets are in bijection with circuits of $\Gale(P)$, which are in bijection with cocircuits of its transform. The only thing we have to do is to consider the vectors of $\Gale(P)$ as a matrix, and find a basis of its kernel. The resulting rows would be then the circuits of $\Gale(P)$, i.e. the facets we are looking for.
+  \end{itemize}
+\end{itemize}
 \end{document}

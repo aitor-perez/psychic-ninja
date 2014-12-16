@@ -1,0 +1,100 @@
+\documentclass[10pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[catalan]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lscape}
+\usepackage{enumerate}
+\usepackage{a4wide}
+\usepackage{paralist}
+\usepackage{url}
+\usepackage{nopageno}
+\usepackage{bbm}
+
+%----------------------------
+%Margins
+%----------------------------
+\topmargin -1.0 cm
+\textheight 22 cm
+\textwidth 17.0cm
+\oddsidemargin -.5cm
+\evensidemargin -.5cm
+%----------------------------
+
+\title{Discrete and Algorithmic Geometry \\Sheet 4}
+\author{Clara Mateo Campo, Aitor P\'erez P\'erez, Arnay Planas Bah\'i}
+\date{}
+
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\R}{\mathbbm{R}}
+\newcommand{\Z}{\mathbbm{Z}}
+\newcommand{\VV}{\mathcal{V}}
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\cols}{cols}
+\DeclareMathOperator{\Sl}{Sl}
+\DeclareMathOperator{\igc}{igc}
+\DeclareMathOperator{\Gale}{Gale}
+
+\newcommand{\ojo}[1]{\textbf{\sffamily\boldmath{[#1]}}}
+
+
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lema}
+\newtheorem{proposition}[theorem]{Proposici\'o}
+\newtheorem{corollary}[theorem]{Coro\lgem{ari}}
+\newtheorem{example}[theorem]{Exemple}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{solution}[theorem]{Soluci\'o}
+
+\newtheorem*{problemG}{Problem G}
+\newtheorem*{problemG*}{Problem G$^\star$}
+
+
+
+\begin{document}
+\maketitle
+
+\begin{problemG*}
+Enumerate, up to combinatorial equivalence, all balanced   configurations~$\VV$ of $n$~vectors in~$\Z^e$ whose coordinates are   all at most~$m$ in absolute value, such that
+\begin{enumerate}[\qquad\upshape(1)]
+\item the maximum $m$ is achieved by some $v\in\VV$, 
+\item and such that no hyperplane spanned by $e-1$~of the vectors   strictly separates exactly one vector from the others.
+\end{enumerate}
+\end{problemG*}
+
+\emph{For this, recall that a vector configuration $\VV = (v_1,\dots,v_n)$ is balanced if $\sum_i v_i=0$;
+that no hyperplane defined by $e-1$~elements of~$\VV$ separates   exactly one vector from the others iff the Gale dual of $\VV$ is in   convex position; and that two vector configurations are combinatorially equivalent if they define the same oriented matroid.}
+\\\\This problem can be divided in two parts
+\begin{enumerate}
+	\item Find all ``diferent'' vector configurations
+	\item Identify those configurations that correspond to the same polytope.
+\end{enumerate}
+\textbf{Pseudocode}
+\\Trivial algorithm: check all the possibilities and after that check if they are combinatorially equivalent. $\mathcal{O}(m^{e(n-1)})$. This is really inefficient!
+\\Note that up to combinatorial equivalence we can reduce the number of possibilities to $\mathcal{O}(m^{e(n-1)}/(|BC_e|n!))$ and $|BC_e| = 2^e e!$, so, it can be done much more efficiently than the algorithm above.
+\begin{enumerate}
+\item Dynamic programming? Calculate the $\mathcal{V}(n,e,m)$ using all the other configurations $\mathcal{V}(n',e',m')$ where $n'<n$, $e'<e$ and $m'<m$. 
+
+Basic cases:
+For $m=0$, the only configuration we can choose is $n$ zero vectors.
+For $n=1$, we can take every possible vector.
+(Estic molt esp\`es i no se m'acudeixen altres casos base, a banda $e=0$, que \'es una parida i no semblen rellevants. Si $e=1$, triar $n$ vectors en dimensi\'o 1 ja \'es prou merda.)
+
+Induction:
+(We add a vector to the configuration) $\mathcal{V}(n + 1,e,m)$
+Take a configuration $v = \{v_1, \ldots, v_n\}\in \mathcal{V}(n,e,m)$ for each vector $v_i$ in this configuration consider all the configurations that keep constant this $v_i$ and at all the other $v_j$ ($j \neq i$), we add the vectors of all the configurations of $\mathcal{V}(n,e,m)$ and the spare vector take as the $n+1$.
+
+$\mathcal{V}(n,e + 1,m)$
+
+(We incrementally consider larger boxes) $\mathcal{V}(n,e,m + 1)$
+Assume we have generated all configurations in $\mathcal{V}(n,e,m)$, then the only new configurations are the ones with at least one vector of length $m+1$. So, for every $i \in [1,n]$, choose $i$ vectors in the boundary and $n-i$ as in $\mathcal{V}(n-i,e,m)$. It remains to be checked which vectors of the boundary can be avoided
+
+
+\item
+\end{enumerate}
+\end{document}

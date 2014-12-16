@@ -96,6 +96,16 @@ $\mathcal{V}(n,e + 1,m)$
 Assume we have generated all configurations in $\mathcal{V}(n,e,m)$, then the only new configurations are the ones with at least one vector of length $m+1$. So, for every $i \in [1,n]$, choose $i$ vectors in the boundary and $n-i$ as in $\mathcal{V}(n-i,e,m)$. It remains to be checked which vectors of the boundary can be avoided
 
 
-\item Once we have removed all equivalent vector configurations, there is something more we have to do. Two different Gale diagrams can represent combinatorially equivalent polytopes, as we saw in the octahedron example slightly moving a vertex. Hence, whenever we get a new Gale diagram, we need to know if its associated polytope is combinatorially equivalent to any of the polytopes we have already seen. The trivial way of doing this is by computing its face lattice (polymake has tools to do so) 
+\item Once we have removed all equivalent vector configurations, there is something more we have to do. Two different Gale diagrams can represent combinatorially equivalent polytopes, as we saw in the octahedron example slightly moving a vertex. Hence, whenever we get a new Gale diagram, we need to know if its associated polytope is combinatorially equivalent to any of the polytopes we have already seen. The trivial way of doing this is by computing its face lattice (polymake has tools to do so) and compare it to the face lattices of every polytope we had.
+
+However, this is quite time-consuming, and we need a way to distinguish some notion of closeness of two Gale diagrams, in order to discard a number of the polytopes we have already seen. The notion proposed in class was the following:
+
+Whenever you have a Gale diagram, compute and store the facets of its associated polytope with it. This is not as time consuming as computing the whole face lattice, and gives us a way of splitting Gale diagrams into smaller groups.
+
+For instance, the first filter can be the number of facets. If we have partitioned the Gale diagrams we have already visited into different subsets, according to the number of facets its associated polytope has, then when a new Gale diagram has to be classified, we only have to compute its number of facets, and then we only have to test for equivalence with the Gale diagrams in the corresponding subset.
+
+A second filter can be the facet structure.
+
+Then, the problem reduces 
 \end{enumerate}
 \end{document}

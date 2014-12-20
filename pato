@@ -1,0 +1,70 @@
+Matrix<Integer> enumerate_configurations(int e, int n, int m) {
+  Matrix<Rational> equations(e+1, e*n+1);
+  for (int j=0; j<e; ++j) {
+    for (int i=0; i<n; ++i) {
+      equations(j, 1 + i*e + j) = 1;
+    }
+  }
+  
+  ListMatrix<SparseVector<Rational> > inequalities(0, e*n+1);
+  
+  // Symmetries
+  for (int i=0; i<e-1; ++i) { // leave out last row
+    SparseVector<Rational> ineq(e*n+1);
+    ineq[1 + i] = 1;
+    ineq[1 + i + 1] = -1;
+    inequalities /= ineq;
+  }
+  SparseVector<Rational> last(e*n+1);
+  last[e] = 1;
+  inequalities /= last;
+  
+  // (Almost) Lexicographic order
+  for (int i=0; i<n-1; ++i) { // leave out last row, since it makes no sense
+    for (int j=0; j<e; ++j) {
+      SparseVector<Rational> ineq(e*n+1);
+      ineq[1 + i*e + j] = 1;
+      ineq[1 + (i+1)*e + j] = -1;
+      inequalities /= ineq;
+    }
+  }
+  
+  // Adding last equation v_00 = m
+  equations(e, 0) = -m;
+  
+  
+  // Cosetes
+  perl::Object P("Polytope");
+  P.take("EQUATIONS") << equations;
+  P.take("INEQUALITIES") << Matrix<Rational>(inequalities);
+  const Matrix<Integer> C = P.give("LATTICE_POINTS"); // Això no va
+  const Matrix<Integer> C = P.callPolymakeMethod("LATTICE_POINTS"); // S'ha de fer així
+  
+  return C;
+}
+
+
+
+const Matrix<Integer> configs = enumerate(e, n, m);
+
+for (Entire<Rows<Matrix<Integer> > >::const_iterator rit; ...) {
+  const Vector<Integer> config(*rit);
+}
+
+
+
+
+
+/*************************************/
+
+class Configuration {
+  public:
+    Vector<int> fuet;
+    Matrix<Rational> matriu;
+    Matrix<int> cocircuits;
+};
+
+// How to use Configuration class
+vector<Configuration> collection;
+collection.push_back(new_config);
+

@@ -34,6 +34,7 @@ class Configuration {
       e = _e;
       n = _n;
       v = _v;
+      
       m = Matrix<Rational>(e+1, n);
       for (int j=0; j<n; ++j) {
         m[0][j] = 1;
@@ -41,6 +42,9 @@ class Configuration {
           m[i][j] = v[j*e + i];
         }
       }
+      
+      // Generar cocircuits
+      
     }
 };
 
@@ -87,17 +91,11 @@ Matrix<Rational> enumerate_configurations(int e, int n, int m) {
     inequalities /= ineq;
   }
   
-  //cerr << equations << endl;
-  //cerr << Matrix<Rational>(inequalities) << endl;
-  
   perl::Object P("Polytope");
   P.take("EQUATIONS") << equations;
   P.take("INEQUALITIES") << inequalities;
   
   const Matrix<Rational> C = P.CallPolymakeMethod("LATTICE_POINTS"); // S'ha de fer així
-
-  //cerr << "**********" << endl;
-  //cerr << C << endl;
 
   return C;
 }

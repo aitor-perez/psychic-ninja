@@ -282,7 +282,7 @@ Matrix<Rational> enumerate_configurations(int e, int n, int m) {
   P.take("INEQUALITIES") << inequalities;
   
   const Matrix<Rational> C = P.CallPolymakeMethod("LATTICE_POINTS"); // S'ha de fer així
-
+  
   return C;
 }
 
@@ -352,9 +352,7 @@ bool check_equivalent(const Polytope& p, const Polytope& q) {
 Array<Matrix<Rational> > gale_complexity(int e, int n, int m) {
   Matrix<Rational> configs = enumerate_configurations(e,n,m);
   
-  //Map<int, Set<Polytope> > polytopes;
-  
-  Set<Polytope> polytopes;
+  Map<int, Map<int, Set<Polytope> > > polytopes;
   
   for (int k=0; k<configs.rows(); ++k) {
     if (check_lexicographically_sorted(e, configs[k])) {
@@ -367,29 +365,31 @@ Array<Matrix<Rational> > gale_complexity(int e, int n, int m) {
         Polytope p(conf.d, n, conf.circuits);
         
         bool is_new = true;
-        for (Entire<Set<Polytope> >::const_iterator it = entire(polytopes); !it.at_end() && is_new; ++it) {
+        for (Entire<Set<Polytope> >::const_iterator it = entire(polytopes[p.n_facets][p.max_vertices_on_facet]); !it.at_end() && is_new; ++it) {
           Polytope current = *it;
-          if (current.n_facets == p.n_facets && current.max_vertices_on_facet == p.max_vertices_on_facet) {
-            if (check_equivalent(p, current)) {
-              is_new = false;
-            }
+          if (check_equivalent(p, current)) {
+            is_new = false;
           }
         }
         
         if (is_new) {
-          polytopes.insert(p);
+          polytopes[p.n_facets][p.max_vertices_on_facet].insert(p);
         }
       }
     }
   }
   
-
-  for (Entire<Set<Polytope> >::const_iterator it = entire(polytopes); !it.at_end(); ++it) {
-    Polytope current = *it;
-    cerr << current.facets << endl;
+  int total = 0;
+  for (Entire<Map<int, Map<int, Set<Polytope> > > >::const_iterator mitf = entire(polytopes); !mitf.at_end(); ++mitf) {
+    for (Entire<Map<int, Set<Polytope> > >::const_iterator mitv = entire(mitf->second); !mitv.at_end(); ++mitv) {
+      cout << mitf->first << " facets, " <<  mitv->first << " max vertices on facet:" <<  endl;
+      for (Entire<Set<Polytope> >::const_iterator sit = entire(mitv->second); !sit.at_end(); ++sit) {
+        cout << (*sit).facets << endl;
+        total++;
+      }
+    }
   }
-
-  
+  cout << "Total: " << total << endl;
   
   return Array<Matrix<Rational> > (0);
 }
